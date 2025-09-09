@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swaraj Warudkar | Software Developer Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Using Tailwind's theme extension would be ideal, but for a single file, we define CSS variables. */
+        :root {
+            --bg: #f7fafc;
+            --card: #ffffff;
+            --muted: #475569;
+            --text: #0b1220;
+            --accent: #0f766e;
+            --glass-border: rgba(2,6,23,0.06);
+            --shadow: 0 8px 24px rgba(8,15,30,0.06);
+        }
+        html.dark {
+            --bg: #0b0f14;
+            --card: #0f1720;
+            --muted: #9aa5b1;
+            --text: #e6eef6;
+            --accent: #6ee7b7;
+            --glass-border: rgba(255,255,255,0.08);
+            --shadow: 0 6px 18px rgba(2,6,23,0.7);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* --- Custom Components with Variables --- */
+        .card {
+            background-color: var(--card);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+        }
+        .text-muted { color: var(--muted); }
+        .text-accent { color: var(--accent); }
+        .border-glass { border-color: var(--glass-border); }
+        
+        /* Glassmorphism Navbar */
+        .nav-scrolled {
+            background-color: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        html.dark .nav-scrolled {
+            background-color: rgba(11, 15, 20, 0.6);
+        }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(to right, #6ee7b7, #3ee6c1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        html.light .gradient-text {
+             background: linear-gradient(to right, #0f766e, #0d9488);
+             -webkit-background-clip: text;
+             -webkit-text-fill-color: transparent;
+             background-clip: text;
+             text-fill-color: transparent;
+        }
+
+        /* Animations */
+        .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.7s cubic-bezier(.2,.9,.2,1), transform 0.7s cubic-bezier(.2,.9,.2,1); }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        .typing-cursor {
+            border-right: .15em solid var(--accent);
+            animation: blink-caret .75s step-end infinite;
+        }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--accent); } }
+
+        /* Project Card Hover */
+        .project-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 22px 44px rgba(2,8,23,0.6);
+        }
+        html.light .project-card:hover {
+            box-shadow: 0 10px 20px rgba(8,15,30,0.1);
+        }
+
+        /* Mobile Nav */
+        #mobile-menu { transition: transform 0.3s ease-in-out; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-3">
+                <a href="#home" class="flex items-center gap-3">
+                    <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+                    <div>
+                        <p class="font-extrabold text-lg">Swaraj Warudkar</p>
+                        <p class="text-xs font-semibold text-muted -mt-1">Software Developer • Python • Java</p>
+                    </div>
+                </a>
+                
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center gap-2">
+                    <a href="#home" class="px-3 py-2 rounded-lg text-sm font-semibold hover:bg-white/5 text-muted hover:text-white transition-all">Home</a>
+                    <a href="#about" class="px-3 py-2 rounded-lg text-sm font-semibold hover:bg-white/5 text-muted hover:text-white transition-all">About</a>
+                    <a href="#skills" class="px-3 py-2 rounded-lg text-sm font-semibold hover:bg-white/5 text-muted hover:text-white transition-all">Skills</a>
+                    <a href="#projects" class="px-3 py-2 rounded-lg text-sm font-semibold hover:bg-white/5 text-muted hover:text-white transition-all">Projects</a>
+                    <a href="#contact" class="px-3 py-2 rounded-lg text-sm font-semibold hover:bg-white/5 text-muted hover:text-white transition-all">Contact</a>
+                </nav>
+
+                <div class="flex items-center gap-4">
+                    <button id="theme-toggle" class="card hidden md:grid place-items-center w-10 h-10 rounded-full cursor-pointer">
+                        <svg id="theme-icon-light" class="h-5 w-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                        <svg id="theme-icon-dark" class="h-5 w-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                    </button>
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-button" class="md:hidden text-muted focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Nav -->
+        <div id="mobile-menu" class="md:hidden bg-card transform -translate-x-full fixed top-0 left-0 w-64 h-full shadow-lg z-50">
+            <div class="p-5 flex flex-col gap-2">
+                <a href="#home" class="mobile-nav-link block p-2 text-lg font-semibold rounded-lg">Home</a>
+                <a href="#about" class="mobile-nav-link block p-2 text-lg font-semibold rounded-lg">About</a>
+                <a href="#skills" class="mobile-nav-link block p-2 text-lg font-semibold rounded-lg">Skills</a>
+                <a href="#projects" class="mobile-nav-link block p-2 text-lg font-semibold rounded-lg">Projects</a>
+                <a href="#contact" class="mobile-nav-link block p-2 text-lg font-semibold rounded-lg">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <main id="home">
+        <div class="container mx-auto px-4">
+            <!-- Hero Section -->
+            <section class="min-h-screen pt-32 pb-16 flex items-center">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
+                    <div class="md:col-span-3">
+                        <h1 class="text-4xl lg:text-5xl font-extrabold !leading-tight">Hi, I’m <span class="gradient-text">Swaraj Warudkar</span> 👋</h1>
+                        <p id="typing" class="text-muted font-bold text-lg mt-2"></p>
+                        <p class="text-muted max-w-2xl mt-4">
+                            Final-year IT student focused on software development — strong in <strong>DSA, Java, Python, MySQL</strong>, and system design basics. I build reliable backend services, automation tools, and efficient algorithms. Open to full-time SDE roles and internships at top tech companies.
+                        </p>
+                        <div class="mt-8 flex flex-wrap gap-4">
+                            <a href="#contact" class="bg-emerald-400 text-emerald-900 font-bold px-6 py-3 rounded-lg hover:bg-emerald-500 transition-colors">Contact for Roles</a>
+                            <a href="#projects" class="card px-6 py-3 rounded-lg font-bold hover:bg-white/5 transition-colors">View Projects</a>
+                        </div>
+                    </div>
+                    <aside class="md:col-span-2">
+                         <div class="card p-4 rounded-xl flex flex-col gap-4">
+                            <img src="my.jpeg" alt="Swaraj Warudkar" class="rounded-lg w-full h-auto">
+                            <div>
+                                <h3 class="font-bold text-lg">Swaraj Warudkar</h3>
+                                <p class="text-sm text-muted">Software Developer • Problem Solver</p>
+                            </div>
+                            <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted">
+                                <span>📧 swarajwarudkar@gmail.com</span>
+                                <span>📞 9075122823</span>
+                            </div>
+                            <div class="flex gap-2 mt-2">
+                                <a href="https://github.com/Swaraj-90" target="_blank" class="card text-sm font-semibold px-4 py-2 rounded-lg hover:bg-white/5 transition-colors">GitHub</a>
+                                <a href="https://www.linkedin.com/in/swaraj-warudkar-8b3b3b232/" target="_blank" class="card text-sm font-semibold px-4 py-2 rounded-lg hover:bg-white/5 transition-colors">LinkedIn</a>
+                                <a href="https://x.com/swaraj_warudkar" target="_blank" class="card text-sm font-semibold px-4 py-2 rounded-lg hover:bg-white/5 transition-colors">X</a>
+                            </div>
+                         </div>
+                    </aside>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section id="about" class="py-20 fade-in">
+                <h2 class="text-2xl font-bold mb-6">About</h2>
+                <div class="card p-6 rounded-xl">
+                     <p class="text-muted">I am a final-year B.E. (Information Technology) student with hands-on experience in building backend services, data-driven tools and algorithmic solutions. I enjoy solving complex problems using data structures and algorithms, writing clean Java/Python code, and building scalable systems.</p>
+                     <ul class="mt-4 space-y-2 text-muted">
+                        <li>🎓 B.E. — Information Technology (Final Year)</li>
+                        <li>📚 Minor in AI — IIT Ropar (in progress)</li>
+                        <li>💼 3+ years experience learning & building in crypto and web3; internship at Growrex Web3 & Media</li>
+                        <li>🧭 Focus: Backend systems, DSA, database design, automation, and production-ready code</li>
+                     </ul>
+                </div>
+            </section>
+
+            <!-- Skills Section -->
+            <section id="skills" class="py-16 fade-in">
+                <h2 class="text-2xl font-bold mb-6">Skills</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="card p-4 rounded-xl flex items-center gap-4 hover:-translate-y-1 transition-transform">
+                        <span class="text-accent text-3xl">💻</span>
+                        <div>
+                            <h3 class="font-bold">DSA</h3>
+                            <p class="text-sm text-muted">Core Algorithms</p>
+                        </div>
+                    </div>
+                    <div class="card p-4 rounded-xl flex items-center gap-4 hover:-translate-y-1 transition-transform">
+                         <span class="text-accent text-3xl">☕</span>
+                        <div>
+                            <h3 class="font-bold">Java</h3>
+                            <p class="text-sm text-muted">Backend & OOP</p>
+                        </div>
+                    </div>
+                    <div class="card p-4 rounded-xl flex items-center gap-4 hover:-translate-y-1 transition-transform">
+                         <span class="text-accent text-3xl">🐍</span>
+                        <div>
+                            <h3 class="font-bold">Python</h3>
+                            <p class="text-sm text-muted">Scripting</p>
+                        </div>
+                    </div>
+                    <div class="card p-4 rounded-xl flex items-center gap-4 hover:-translate-y-1 transition-transform">
+                         <span class="text-accent text-3xl">🗃️</span>
+                        <div>
+                            <h3 class="font-bold">MySQL</h3>
+                            <p class="text-sm text-muted">Databases</p>
+                        </div>
+                    </div>
+                    <div class="card p-4 rounded-xl flex items-center gap-4 hover:-translate-y-1 transition-transform">
+                        <span class="text-accent text-3xl">🏗️</span>
+                        <div>
+                            <h3 class="font-bold">System Design</h3>
+                            <p class="text-sm text-muted">Fundamentals</p>
+                        </div>
+                    </div>
+                     <div class="card p-4 rounded-xl flex items-center gap-4 hover:-translate-y-1 transition-transform">
+                        <span class="text-accent text-3xl">🌐</span>
+                        <div>
+                            <h3 class="font-bold">Web Dev</h3>
+                            <p class="text-sm text-muted">HTML/CSS/JS</p>
+                        </div>
+                    </div>
+                    <div class="card p-4 rounded-xl flex items-center gap-4 hover:-translate-y-1 transition-transform">
+                        <span class="text-accent text-3xl">📦</span>
+                        <div>
+                            <h3 class="font-bold">Git/GitHub</h3>
+                            <p class="text-sm text-muted">Version Control</p>
+                        </div>
+                    </div>
+                    <div class="card p-4 rounded-xl flex items-center gap-4 hover:-translate-y-1 transition-transform">
+                        <span class="text-accent text-3xl">🔗</span>
+                        <div>
+                            <h3 class="font-bold">Web3</h3>
+                            <p class="text-sm text-muted">Concepts</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="py-16 fade-in">
+                <h2 class="text-2xl font-bold mb-6">Selected Projects</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="project-card card rounded-xl overflow-hidden cursor-pointer transition-all" data-project-id="1">
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg mb-1">RFID Student Management</h3>
+                            <p class="text-muted text-sm">Backend + admin panels for attendance, library & canteen with RFID integration.</p>
+                        </div>
+                    </div>
+                    <div class="project-card card rounded-xl overflow-hidden cursor-pointer transition-all" data-project-id="2">
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg mb-1">Altcoin Trading Strategy</h3>
+                            <p class="text-muted text-sm">Algorithmic approach for signals based on BTC.D + USDT.D dominance indicators.</p>
+                        </div>
+                    </div>
+                    <div class="project-card card rounded-xl overflow-hidden cursor-pointer transition-all" data-project-id="3">
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg mb-1">Database & Java Mini Projects</h3>
+                            <p class="text-muted text-sm">Projects demonstrating CRUD, joins, transactions, and Java apps using MySQL.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <!-- Contact Section -->
+            <section id="contact" class="py-20 fade-in">
+                <h2 class="text-2xl font-bold mb-6">Contact</h2>
+                <div class="card p-6 rounded-xl">
+                    <form id="contact-form">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <input type="text" placeholder="Your Name" class="w-full bg-transparent p-3 rounded-lg border-2 border-glass focus:outline-none focus:border-accent transition-colors">
+                            <input type="email" placeholder="Your Email" class="w-full bg-transparent p-3 rounded-lg border-2 border-glass focus:outline-none focus:border-accent transition-colors">
+                        </div>
+                        <textarea placeholder="Message about role or project..." rows="5" class="w-full bg-transparent p-3 mt-6 rounded-lg border-2 border-glass focus:outline-none focus:border-accent transition-colors"></textarea>
+                        <div class="mt-6">
+                            <button type="submit" class="bg-emerald-400 text-emerald-900 font-bold px-6 py-3 rounded-lg hover:bg-emerald-500 transition-colors">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <footer class="text-center py-8 text-muted text-sm border-t border-glass">
+                 © 2025 Swaraj Warudkar | Built with 💻 & ☕
+            </footer>
+        </div>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Theme Toggle ---
+            const themeToggle = document.getElementById('theme-toggle');
+            const lightIcon = document.getElementById('theme-icon-light');
+            const darkIcon = document.getElementById('theme-icon-dark');
+
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    darkIcon.classList.remove('hidden');
+                    lightIcon.classList.add('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    darkIcon.classList.add('hidden');
+                    lightIcon.classList.remove('hidden');
+                }
+            };
+            
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            applyTheme(currentTheme);
+
+            themeToggle.addEventListener('click', () => {
+                const newTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+                localStorage.setItem('theme', newTheme);
+                applyTheme(newTheme);
+            });
+
+            // --- Sticky Navbar ---
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', () => {
+                header.classList.toggle('nav-scrolled', window.scrollY > 50);
+            });
+
+            // --- Typing Animation ---
+            const el = document.getElementById('typing');
+            const phrases = ["Software Developer", "Web3 & AI Enthusiast", "Problem Solver"];
+            let phraseIndex = 0, charIndex = 0, isDeleting = false;
+
+            function type() {
+                const currentPhrase = phrases[phraseIndex];
+                const typeSpeed = isDeleting ? 40 : 100;
+
+                if (isDeleting) {
+                    el.textContent = currentPhrase.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    el.textContent = currentPhrase.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+
+                if (!isDeleting && charIndex === currentPhrase.length) {
+                    setTimeout(() => isDeleting = true, 1800);
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    phraseIndex = (phraseIndex + 1) % phrases.length;
+                }
+                setTimeout(type, typeSpeed);
+            }
+            type();
+            
+            // --- Scroll Animations ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+            
+             // --- Mobile Menu ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+            
+            mobileMenuButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileMenu.classList.toggle('-translate-x-full');
+            });
+            
+            const closeMenu = () => mobileMenu.classList.add('-translate-x-full');
+            mobileNavLinks.forEach(link => link.addEventListener('click', closeMenu));
+            document.addEventListener('click', (e) => {
+                if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                    closeMenu();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
